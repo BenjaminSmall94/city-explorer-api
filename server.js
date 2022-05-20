@@ -18,13 +18,13 @@ app.get('/', (request, response) => {
   response.send('Hello from our server');
 });
 
-app.get('*', (request, response) => {
-  response.send('The thing you are looking for does not exist');
-});
-
 app.get('/weather', getWeather);
 
 app.get('/movies', getMovies);
+
+app.get('*', (request, response) => {
+  response.send('The thing you are looking for does not exist');
+});
 
 // ERRORS - Copied from starter code
 app.use((error, request, response) => {
