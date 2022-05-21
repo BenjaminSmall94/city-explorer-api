@@ -20,6 +20,10 @@ app.get('/weather', weatherHandler);
 
 app.get('/movies', getMovies);
 
+app.get('*', (request, response) => {
+  response.status(400).send('Page does not exist');
+});
+
 function weatherHandler(request, response) {
   const {lat, lon} = request.query;
   getWeather(lat, lon)
