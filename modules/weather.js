@@ -1,30 +1,42 @@
 'use strict';
 
 const axios = require('axios');
-const weatherURL = 'https://api.weatherbit.io/v2.0/forecast/daily';
 
-let getWeather = async function(request, response, next) {
-  try {
-    // let requestedCity = request.query.cityName;
-    // let cityWeatherData = data.find(city => city.city_name.toLowerCase() === requestedCity.toLowerCase());
-    let cityWeatherData = await axios.get(`${weatherURL}?key=${process.env.WEATHER_API_KEY}&lat=${request.query.latitude}&lon=${request.query.longitude}`);
-    cityWeatherData = cityWeatherData.data;
-    let responseToSend = [];
-    cityWeatherData.data.map(dailyWeather => {
-      let description = `Low of ${dailyWeather.low_temp}, high of ${dailyWeather.high_temp} with ${dailyWeather.weather.description}`;
-      responseToSend.push(new Forecast(description, dailyWeather.datetime));
-    });
-    response.send(responseToSend);
-  } catch (error) {
-    next(error);
+let cache = require('./cache.js');
+
+module.exports = getWeather;
+
+async function getWeather(lat, lon) {
+  const key = 'weather-' + lat + lon;
+  const url = `http://api.weatherbit.io/v2.0/forecast/daily/?key=${process.env.WEATHER_API_KEY}&lang=en&lat=${lat}&lon=${lon}&days=5`;
+
+  if (cache[key] && (Date.now() - cache[key].timestamp < 50000)) {
+    console.log('weather hit');
+  } else {
+    console.log('weather miss');
+    cache[key] = {};
+    cache[key].timestamp = Date.now();
+    cache[key].data = await axios.get(url)
+      .then(response => parseWeather(response.data));
   }
-};
 
-class Forecast {
-  constructor(description, dateTime) {
-    this.description = description;
-    this.date = dateTime;
+  return cache[key].data;
+}
+
+function parseWeather(weatherData) {
+  try {
+    const weatherSummaries = weatherData.data.map(day => {
+      return new Weather(day);
+    });
+    return Promise.resolve(weatherSummaries);
+  } catch (e) {
+    return Promise.reject(e);
   }
 }
 
-module.exports = getWeather;
+class Weather {
+  constructor(day) {
+    this.forecast = day.weather.description;
+    this.time = day.datetime;
+  }
+}
