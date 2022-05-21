@@ -139,6 +139,16 @@ The back-end for city explorer application
    - End: May 19, 2022 11:30pm
    - Actual Time: 2-hr
 
+#### Day 5
+
+1. Feature Task #1
+   - Name: Implement and clean up "starter code", implement cached API data on the server
+   - Estimated Time: 1.5 hr
+   - Start: May 20, 2022 6:30pm
+   - End: May 20, 2022 10:00pm
+   - Actual Time: 3.5 hrs
+   - Comments: I actually lost track of time a little with this one as I took numerous breaks. But I ended up spending a lot of time trying to figure some new stuff out and clean up the bugs. I think my brain was a little tired too.
+
 #### Time Estimates Comments
 
 My actual time elapsed is actually on the low end because it doesn't include the time it took me to do a lot of independent research before even starting each task.
